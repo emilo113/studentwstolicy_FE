@@ -1,12 +1,14 @@
 let googleMapsLoader = require('google-maps');
 let google = null;
 let polyline = require('@mapbox/polyline');
-const $ = require('jquery');
+let $ = require('jquery');
 
 class MapService {
 	constructor(apiService, $rootScope, $compile, $timeout, dataService) {
 		this.map = null;
 		this.mapWrapper = document.getElementById('map');
+
+		this.KEY = 'AIzaSyA0nEprrpvg0haHFR9vZjlum7GYhmWJXAA';
 
 		this.apiService = apiService;
 		this.$rootScope = $rootScope;
@@ -121,8 +123,8 @@ class MapService {
 			places.forEach(place => {
 				let marker = new google.maps.Marker({
 					position: {
-						lat: place.lat,
-						lng: place.lng
+						lat: Number(place.lat),
+						lng: Number(place.lng)
 					},
 					map: this.map,
 					title: place.name
@@ -393,8 +395,8 @@ class MapService {
 	getFakeMarker(place) {
 		return new google.maps.Marker({
 			position: {
-				lat: place.lat,
-				lng: place.lng
+				lat: Number(place.lat),
+				lng: Number(place.lng)
 			},
 			title: place.name
 		});

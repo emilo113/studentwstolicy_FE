@@ -2,7 +2,7 @@ const $ = require('jquery');
 
 class ApiService {
 	constructor(dataService, $uibModal, userService, $rootScope) {
-		this.API_URL = 'http://127.0.0.1:8000/api/';
+		this.API_URL = 'https://emil-api.hcore.pl/public/api/';
 
 		this.dataService = dataService;
 		this.$uibModal = $uibModal;
