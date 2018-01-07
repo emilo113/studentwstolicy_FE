@@ -12,15 +12,15 @@ class DataService {
 	}
 
 	getCityById(id) {
-		return this.cities.find(city => city.id === id);
+		return this.cities.find(city => city.id === Number(id));
 	}
 
 	getCategoryById(id) {
-		return this.categories.find(category => category.id === id);
+		return this.categories.find(category => category.id === Number(id));
 	}
 
 	isFavoritePlace(id) {
-		return this.favoritePlaces.find(place => place.id === id);
+		return this.favoritePlaces.find(place => place.id === Number(id));
 	}
 }
 
