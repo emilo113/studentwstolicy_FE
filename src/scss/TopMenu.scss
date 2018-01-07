@@ -1,0 +1,62 @@
+@import "vars";
+
+.topMenu {
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+	justify-content: space-between;
+
+	background-color: $color-dark;
+	height: $topMenuHeight;
+
+	@media all and (max-width: $mobile-low) {
+		flex-direction: column;
+		align-items: center;
+		flex-wrap: nowrap;
+		height: $topMenuHeightMobile;
+	}
+
+	&__title {
+		display: flex;
+		align-items: center;
+		padding: 0 20px;
+		font-size: 1.5em;
+
+		@media all and (max-width: $mobile-low) {
+			height: 100%;
+			align-items: center;
+		}
+	}
+
+	&__controls {
+		border-left: 1px solid $color-mid;
+
+		@media all and (max-width: $mobile-low) {
+			border-left: none;
+			width: 100%;
+			border-top: .5px solid $color-mid;
+		}
+	}
+
+	&__signIn, &__signOut {
+		height: 100%;
+		display: flex;
+		align-items: center;
+		padding: 0 20px;
+		cursor: pointer;
+		transition: background $transition-time;
+
+		@media all and (max-width: $mobile-low) {
+			justify-content: center;
+			padding: 10px 0;
+		}
+
+		&:hover {
+			background: $color-mid;
+		}
+
+		span {
+			padding-left: 10px;
+		}
+	}
+}

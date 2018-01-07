@@ -1,0 +1,25 @@
+$topMenuHeight: 60px;
+$topMenuHeightMobile: 100px;
+
+$userMenuHeight: 50px;
+
+$mainWrapperHeight: calc(100vh - #{$topMenuHeight});
+$mainWrapperHeightMobile: calc(100vh - #{$topMenuHeightMobile});
+
+$mainWrapperHeightUser: calc(100vh - #{$topMenuHeight} - #{$userMenuHeight});
+$mainWrapperHeightUserMobile: calc(100vh - #{$topMenuHeightMobile} - #{$userMenuHeight});
+
+$color-light: #FFCDB2;
+$color-dark: #6D6875;
+$color-brand: #E5989B;
+$color-accent: #FFB4A2;
+$color-mid: #B5838D;
+
+$color-white: #ffffff;
+$color-black: #000000;
+$color-light-grey: #eaeaea;
+
+$transition-time: .5s;
+
+$mobile-mid: 1110px;
+$mobile-low: 900px;

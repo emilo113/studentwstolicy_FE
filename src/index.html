@@ -1,0 +1,30 @@
+<!doctype html>
+<html>
+  <head>
+    <base href="/">
+    <meta charset="utf-8">
+    <title>FountainJS</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="http://fountainjs.io/assets/imgs/fountain.png" />
+    <link type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+
+  </head>
+
+  <body ng-app="app">
+  <div uib-alert
+       ng-if="alerts.length > 0"
+       dismiss-on-timeout="5000"
+       ng-class="'alert-' + (alert.type || 'warning')"
+       ng-repeat="alert in alerts"
+       close="alert.close()"
+       ng-bind="alert.msg">
+  </div>
+  <div class="loaderWrapper" ng-show="$root.loader">
+    <div class="loaderWrapper__loader"></div>
+  </div>
+  <top-menu></top-menu>
+  <ui-view></ui-view>
+  <user-menu ng-if="$root.userInfo"></user-menu>
+  </body>
+</html>

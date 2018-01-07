@@ -1,0 +1,36 @@
+<div class="sModal sModal--locationModal">
+	<div class="sModal__header">
+		<h1>
+			<i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+			Błąd lokalizacji
+		</h1>
+	</div>
+	<div class="sModal__body">
+		<p>Niestety serwis nie uzyskał dostępu do modułu lokalizacji.</p>
+		<p>Podaj adres, bądź miejsce w którym się znajdujesz:</p>
+		
+		<div class="sModal--locationModal__search">
+			<input type="text"
+			       ng-model="$ctrl.position"
+			       ng-keyup="$event.keyCode == 13 && $ctrl.isValid() && $ctrl.savePosition()"
+			       placeholder="Adres..."
+			       uib-typeahead="address as address.name for address in $ctrl.getLocation($viewValue)"
+			       typeahead-loading="loadingLocations"
+			       typeahead-no-results="noResults"
+			       class="form-control">
+			<i ng-show="loadingLocations" class="fa fa-spinner" aria-hidden="true"></i>
+			<div ng-show="noResults">
+				<i class="fa fa-times" aria-hidden="true"></i> Nic nie znaleziono
+			</div>
+		</div>
+		
+	</div>
+	<div class="sModal__footer">
+		<button class="sModal__button"
+		        ng-click="$ctrl.savePosition()"
+		        ng-class="{'sModal__button--disabled': !$ctrl.isValid()}"
+		        ng-disabled="!$ctrl.isValid()">
+			Zapisz pozycję
+		</button>
+	</div>
+</div>

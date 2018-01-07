@@ -1,0 +1,66 @@
+@import 'vars';
+
+$animation-duration: 1.8s;
+
+.loaderWrapper {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background: rgba($color-dark, .95);
+	z-index: 100;
+
+	&__loader.ng-animate {
+		-webkit-animation: none 0s;
+	}
+
+	&__loader {
+		position: absolute;
+		top: 50%;
+		left: calc(50% - 25px);
+		width: 50px;
+		height: 10px;
+		background: $color-accent;
+		border-radius: 5px;
+		animation: load $animation-duration ease-in-out infinite;
+
+		&--alone {
+			position: relative;
+			margin: 50px 0;
+		}
+
+		&:before, &:after {
+			position: absolute;
+			display: block;
+			content: "";
+			animation: load $animation-duration ease-in-out infinite;
+			height: 10px;
+			border-radius: 5px;
+		}
+		&:before {
+			top: -20px;
+			left: 10px;
+			width: 40px;
+			background: $color-light;
+		}
+		&:after {
+			bottom: -20px;
+			width: 35px;
+			background: $color-brand;
+		}
+	}
+
+	@keyframes load {
+		0% {
+			transform: translateX(40px);
+		}
+
+		50% {
+			transform: translateX(-30px);
+		}
+		100% {
+			transform: translateX(40px);
+		}
+	}
+}

@@ -1,0 +1,15 @@
+<div class="topMenu">
+	<div class="topMenu__title">
+		{{ ::$ctrl.title }}
+	</div>
+	<div class="topMenu__controls">
+		<div class="topMenu__signIn" ng-click="$ctrl.signIn()" ng-if="!$root.userInfo">
+			<i class="fa fa-sign-in" aria-hidden="true"></i>
+			<span>Zaloguj się</span>
+		</div>
+		<div class="topMenu__signIn" ng-click="$ctrl.signOut()" ng-if="$root.userInfo">
+			<i class="fa fa-sign-out" aria-hidden="true"></i>
+			<span>Wyloguj się</span>
+		</div>
+	</div>
+</div>

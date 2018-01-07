@@ -1,0 +1,21 @@
+@import 'vars';
+
+.infoWindow {
+	font-size: 0.9em;
+	color: $color-dark;
+
+	&__title {
+		font-size: 1.1em;
+	}
+
+	&__favorite {
+		margin-top: 10px;
+		color: $color-light-grey;
+		font-size: 1.8em;
+		cursor: pointer;
+
+		&:hover, &--checked {
+			color: crimson;
+		}
+	}
+}

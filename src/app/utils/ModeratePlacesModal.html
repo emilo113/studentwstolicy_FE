@@ -1,0 +1,62 @@
+<div class="sModal sModal--moderatePlacesModal">
+	<div class="sModal__close" ng-click="$ctrl.close()"></div>
+	<div class="sModal__header">
+		<h1>
+			<i class="fa fa-check-square-o" aria-hidden="true"></i>
+			Proponowane miejsca
+		</h1>
+	</div>
+	<div class="sModal__body">
+		<div ng-show="$ctrl.loading" class="loaderWrapper__loader loaderWrapper__loader--alone"></div>
+		
+		<div ng-hide="$ctrl.loading">
+			<p ng-if="$ctrl.inactivePlaces.length === 0">
+				Brak proponowanych miejsc.
+			</p>
+			<uib-accordion ng-if="$ctrl.inactivePlaces.length > 0">
+				<div uib-accordion-group class="panel-default sModal--moderatePlacesModal__group" heading="{{place.name}}" ng-repeat="place in $ctrl.inactivePlaces">
+					<div class="loaderWrapper__loader loaderWrapper__loader--alone" ng-show="place.loading"></div>
+					<div ng-hide="place.loading">
+						<p>
+							<span class="fieldLabel">Nazwa: </span>
+							<span>{{ place.name }}</span>
+						</p>
+						<p>
+							<span class="fieldLabel">Adres: </span>
+							<span>{{ place.location.name }}</span>
+						</p>
+						<p>
+							<span class="fieldLabel">Miasto: </span>
+							<span>{{ $ctrl.dataService.getCityById(place.city_id).name }}</span>
+						</p>
+						<p>
+							<span class="fieldLabel">Kategoria: </span>
+							<span>{{ $ctrl.dataService.getCategoryById(place.category_id).name }}</span>
+						</p>
+						<p ng-if="place.description.length > 0">
+							<span class="fieldLabel">Opis: </span>
+							<span>{{ place.description }}</span>
+						</p>
+						
+						<div class="sModal--moderatePlacesModal__buttons">
+							<button class="sModal__button"
+							        ng-click="$ctrl.acceptPlace(place)">
+								Zaakceptuj
+							</button>
+							<button class="sModal__button"
+							        ng-click="$ctrl.editPlace(place)">
+								Edytuj i zaakceptuj
+							</button>
+							<button class="sModal__button"
+							        ng-click="$ctrl.removePlace(place)">
+								Odrzuć
+							</button>
+						</div>
+					</div>
+					
+				</div>
+			</uib-accordion>
+		</div>
+	
+	</div>
+</div>

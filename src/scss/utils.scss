@@ -1,0 +1,29 @@
+@import 'lib/bootstrap_custom/css/bootstrap';
+
+@import url('https://fonts.googleapis.com/css?family=Dosis:200,300,400,500,600,700,800&subset=latin-ext');
+
+@import 'vars';
+@import 'loader';
+@import 'modal';
+@import 'alert';
+@import 'infoWindow';
+
+* {
+	margin: 0;
+	padding: 0;
+}
+
+body {
+	font-size: 18px;
+	font-weight: 200;
+	font-family: Dosis, sans-serif;
+	color: $color-light;
+
+	@media all and (max-width: $mobile-mid) {
+		font-size: 15px;
+	}
+}
+
+body > .ui-select-container {
+	z-index: 9999 !important;
+}

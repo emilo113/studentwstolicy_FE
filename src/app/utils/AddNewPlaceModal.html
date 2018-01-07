@@ -1,0 +1,119 @@
+<div class="sModal sModal--addNewPlaceModal">
+	<div class="sModal__close" ng-click="$ctrl.close()"></div>
+	<div class="sModal__header">
+		<h1>
+			<i class="fa fa-map-marker" aria-hidden="true"></i>
+			<span ng-if="$root.userInfo.account_type === 2">
+				Zaproponuj nowe miejsce
+			</span>
+			<span ng-if="$root.userInfo.account_type !== 2">
+				<span ng-if="!$ctrl.editMode">
+					Dodaj nowe miejsce
+				</span>
+				<span ng-if="$ctrl.editMode">
+					Edytujesz proponowane miejsce
+				</span>
+			</span>
+		</h1>
+	</div>
+	<div class="sModal__body">
+		<div class="loaderWrapper__loader loaderWrapper__loader--alone" ng-show="$ctrl.loading"></div>
+		
+		<div class="col-md-6 col-md-offset-3" ng-hide="$ctrl.loading">
+			
+			<div class="form-group">
+				<label for="name">Nazwa *</label>
+				<input type="text" name="name" id="name" class="form-control" ng-model="$ctrl.name" ng-change="$ctrl.edited = true"/>
+			</div>
+			
+			<div class="form-group">
+				<div class="sModal--locationModal__search">
+					<label>Adres *</label>
+					<input type="text"
+					       ng-model="$ctrl.position"
+					       ng-change="$ctrl.edited = true"
+					       placeholder="Adres..."
+					       uib-typeahead="address as address.name for address in $ctrl.geolocationService.getLocation($viewValue)"
+					       typeahead-loading="loadingLocations"
+					       typeahead-no-results="noResults"
+					       class="form-control">
+					<i ng-show="loadingLocations" class="fa fa-spinner" aria-hidden="true"></i>
+					<div ng-show="noResults">
+						<i class="fa fa-times" aria-hidden="true"></i> Nic nie znaleziono
+					</div>
+				</div>
+			</div>
+			
+			<div class="form-group">
+				<label>Miasto *</label>
+				<ui-select ng-model="$ctrl.city"
+				           on-select="$ctrl.edited = true"
+				           theme="bootstrap"
+				           append-to-body="true">
+					
+					<ui-select-match placeholder="Miasto...">
+						{{$select.selected.name}}
+					</ui-select-match>
+					
+					<ui-select-choices repeat="city in $ctrl.dataService.cities">
+						{{city.name}}
+					</ui-select-choices>
+				
+				</ui-select>
+			</div>
+			
+			<div class="form-group">
+				<label>Kategoria *</label>
+				<ui-select ng-model="$ctrl.category"
+				           on-select="$ctrl.edited = true"
+				           theme="bootstrap"
+				           append-to-body="true">
+					
+					<ui-select-match placeholder="Kategoria...">
+						{{$select.selected.name}}
+					</ui-select-match>
+					
+					<ui-select-choices repeat="category in $ctrl.dataService.categories">
+						{{category.name}}
+					</ui-select-choices>
+				
+				</ui-select>
+			</div>
+			
+			<div class="form-group">
+				<label for="description">Opis</label>
+				<textarea name="description"
+				          id="description"
+				          class="form-control"
+				          style="resize: none"
+				          rows="5"
+				          ng-model="$ctrl.description"
+				          ng-change="$ctrl.edited = true"
+				></textarea>
+			</div>
+			
+		</div>
+		
+	</div>
+	<div class="sModal__footer">
+		<button class="sModal__button"
+		        ng-if="!$ctrl.editMode"
+		        ng-click="$ctrl.addNewPlace()"
+		        ng-class="{'sModal__button--disabled': !$ctrl.isValid()}"
+		        ng-disabled="!$ctrl.isValid()">
+			<span ng-if="$root.userInfo.account_type === 2">
+				Wyślij propozycję
+			</span>
+			<span ng-if="$root.userInfo.account_type !== 2">
+				Dodaj
+			</span>
+		</button>
+		<button ng-if="$ctrl.editMode"
+		        class="sModal__button"
+		        ng-click="$ctrl.acceptEdited()"
+		        ng-class="{'sModal__button--disabled': !$ctrl.isValid() || !$ctrl.isEdited()}"
+		        ng-disabled="!$ctrl.isValid() || !$ctrl.isEdited()">
+			Zaakceptuj
+		</button>
+	</div>
+</div>
