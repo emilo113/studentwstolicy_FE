@@ -1,0 +1,21 @@
+<div class="mainWrapper__categorySelect mainWrapper__absoluteWrapper">
+	<p>
+		Kategoria:
+	</p>
+	
+	<ui-select ng-model="$ctrl.selectedCategory"
+	           on-select="$ctrl.categorySelectChange($item)"
+	           theme="bootstrap"
+	           title="Wybierz kategorię"
+	           append-to-body="true">
+		
+		<ui-select-match placeholder="Wybierz kategorię...">
+			{{$select.selected.name}}
+		</ui-select-match>
+		
+		<ui-select-choices repeat="category in $ctrl.dataService.categories">
+			{{category.name}}
+		</ui-select-choices>
+	
+	</ui-select>
+</div>

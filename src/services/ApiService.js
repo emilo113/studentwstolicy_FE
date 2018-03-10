@@ -85,6 +85,7 @@ class ApiService {
 					dataType: 'JSON',
 					success: response => {
 						this.$rootScope.userInfo = response.user;
+						this.$rootScope.userInfo.account_type = Number(response.user.account_type);
 						resolve();
 					}
 				});
@@ -224,21 +225,6 @@ class ApiService {
 				},
 				success: response => {
 					resolve(response.place);
-				}
-			});
-
-		});
-	}
-
-	isFavoritePlacePromise(placeId) {
-		return new Promise((resolve, reject) => {
-
-			$.ajax({
-				type: 'GET',
-				url: this.API_URL + 'favorite-place/' + placeId + '?token=' + this.userService.getToken(),
-				dataType: 'JSON',
-				success: response => {
-					resolve(response.id);
 				}
 			});
 

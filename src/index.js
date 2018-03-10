@@ -9,13 +9,14 @@ import {SignUpModal} from './app/utils/SignUpModal';
 import {AddNewPlaceModal} from './app/utils/AddNewPlaceModal';
 import {ModeratePlacesModal} from './app/utils/ModeratePlacesModal';
 import {FavoritePlacesModal} from './app/utils/FavoritePlacesModal';
+import {CategoriesWindow} from './app/utils/CategoriesWindow';
+import {RoutesWindow} from './app/utils/RoutesWindow';
 
 import 'angular-ui-router';
 import routesConfig from './routes';
 import './index.scss';
 
 let MapService = require('./services/MapService').default;
-let PlacesHelper = require('./services/PlacesHelper').default;
 let ApiService = require('./services/ApiService').default;
 let RoutesService = require('./services/RoutesService').default;
 let WarsawApiService = require('./services/WarsawApiService').default;
@@ -24,6 +25,7 @@ let UserService = require('./services/UserService').default;
 let AlertsService = require('./services/AlertsService').default;
 let LoaderService = require('./services/LoaderService').default;
 let DataService = require('./services/DataService').default;
+let MobileService = require('./services/MobileService').default;
 
 export const app = 'app';
 
@@ -39,7 +41,6 @@ angular
 	.module(app, ['ngSanitize', 'ngAnimate', 'ngTouch', 'ui.router', 'ui.select', 'ui.bootstrap'])
 	.config(routesConfig)
 	.service('mapService', MapService)
-	.service('placesHelper', PlacesHelper)
 	.service('apiService', ApiService)
 	.service('routesService', RoutesService)
 	.service('warsawApiService', WarsawApiService)
@@ -48,7 +49,9 @@ angular
 	.service('alertsService', AlertsService)
 	.service('loaderService', LoaderService)
 	.service('dataService', DataService)
+	.service('mobileService', MobileService)
 	.component('mainWrapper', MainWrapper)
+	.component('categoriesWindow', CategoriesWindow)
 	.component('locationModal', LocationModal)
 	.component('signInModal', SignInModal)
 	.component('signUpModal', SignUpModal)
@@ -57,6 +60,7 @@ angular
 	.component('favoritePlacesModal', FavoritePlacesModal)
 	.component('topMenu', TopMenu)
 	.component('userMenu', UserMenu)
+	.component('routesWindow', RoutesWindow)
 	.run(loaderService => {
 		loaderService.loaderOn();
 	});

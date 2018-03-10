@@ -2,43 +2,37 @@ import angular from 'angular';
 const $ = require('jquery');
 
 class RoutesService {
-	constructor() {
-		this.url = 'https://maps.googleapis.com/maps/api/directions/json';
-		this.key = 'AIzaSyA0nEprrpvg0haHFR9vZjlum7GYhmWJXAA';
+	constructor($http, mapService) {
+		'ngInject';
 
-		this.basicConf = {
-			key: this.key,
-			alternatives: true,
-			mode: 'transit'
-		};
+		this.$http = $http;
+		this.mapService = mapService;
 
 		this.currentDestinationMarker = null;
-		this.lastDepartureTimestamp = null;
-	}
-
-	getBasicConf() {
-		return angular.copy(this.basicConf);
+		this.lastDepartureTime = null;
 	}
 
 	getAvailableConnectionsPromise(markerA, markerB) {
 		this.currentDestinationMarker = markerB;
 
+		let parameters = {
+			provideRouteAlternatives: true,
+			travelMode: 'TRANSIT',
+			origin: markerA.position.lat() + ',' + markerA.position.lng(),
+			destination: markerB.position.lat() + ',' + markerB.position.lng()
+		};
+
+		if (this.lastDepartureTime) {
+			parameters.transitOptions = {
+				departureTime: this.lastDepartureTime
+			};
+		}
+
+		let directionService = new this.mapService.google.maps.DirectionsService();
+
 		return new Promise((resolve, reject) => {
-			let parameters = this.getBasicConf();
-			parameters.origin = markerA.position.lat() + ',' + markerA.position.lng();
-			parameters.destination = markerB.position.lat() + ',' + markerB.position.lng();
-
-			if (this.lastDepartureTimestamp) {
-				parameters.departure_time = this.lastDepartureTimestamp;
-			}
-
-			$.get({
-				url: this.url,
-				data: parameters,
-				dataType: 'JSON',
-				success: answer => {
-					resolve(this.parseData(answer));
-				}
+			directionService.route(parameters, response => {
+				resolve(this.parseData(response));
 			});
 		});
 
@@ -46,21 +40,21 @@ class RoutesService {
 
 	parseData(baseJson) {
 		let result = [];
-		let tmpTimestamp = angular.copy(this.lastDepartureTimestamp);
+		let tmpTimestamp = angular.copy(this.lastDepartureTime);
 
 		baseJson.routes.forEach(route => {
-			if (route.legs[0].departure_time) {
-				this.lastDepartureTimestamp = route.legs[0].departure_time.value + 60;
+			if (route.legs[0].departure_time && route.legs[0].departure_time.value > this.lastDepartureTime) {
+				this.lastDepartureTime = new Date(route.legs[0].departure_time.value.getTime() + 60000);
 			}
 
 			result.push(route.legs[0]);
 		});
 
-		if (tmpTimestamp === this.lastDepartureTimestamp) {
-			if (!this.lastDepartureTimestamp) {
-				this.lastDepartureTimestamp = $.now() + 3600;
+		if (tmpTimestamp === this.lastDepartureTime) {
+			if (!this.lastDepartureTime) {
+				this.lastDepartureTime = new Date($.now() + 3600000);
 			} else {
-				this.lastDepartureTimestamp += 3600;
+				this.lastDepartureTime = new Date(this.lastDepartureTime.getTime() 	+ 3600000);
 			}
 		}
 
@@ -69,7 +63,7 @@ class RoutesService {
 
 	clearTemporaryData() {
 		this.currentDestinationMarker = null;
-		this.lastDepartureTimestamp = null;
+		this.lastDepartureTime = null;
 	}
 }
 

@@ -63,6 +63,7 @@ module.exports = {
       template: conf.path.src('index.html')
     }),
     new ExtractTextPlugin('index-[contenthash].css'),
+    new webpack.optimize.UglifyJsPlugin({minimize: true}),
     new webpack.optimize.CommonsChunkPlugin({name: 'vendor'}),
     new webpack.LoaderOptionsPlugin({
       options: {

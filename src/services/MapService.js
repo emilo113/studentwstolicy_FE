@@ -64,7 +64,7 @@ class MapService {
 		return new Promise(resolve => {
 			googleMapsLoader.KEY = this.KEY;
 			googleMapsLoader.load(loadedGoogle => {
-				google = loadedGoogle;
+				this.google = google = loadedGoogle;
 				this.drawMap();
 				resolve();
 			});
@@ -212,9 +212,9 @@ class MapService {
 				if (step.travel_mode === 'TRANSIT') {
 					polyline.line_info = {
 						travel_mode: step.travel_mode,
-						line_number: step.transit_details.line.short_name,
-						vehicle_type: step.transit_details.line.vehicle.type,
-						vehicle_icon: step.transit_details.line.vehicle.icon
+						line_number: step.transit.line.short_name,
+						vehicle_type: step.transit.line.vehicle.type,
+						vehicle_icon: step.transit.line.vehicle.icon
 					};
 				}
 				this.polylines.push(polyline);
@@ -235,15 +235,15 @@ class MapService {
 		this.pathMarkers = this.pathMarkers.concat([
 			new google.maps.Marker({
 				map: this.map,
-				position: step.transit_details.departure_stop.location,
+				position: step.transit.departure_stop.location,
 				icon: stopIcon,
-				title: step.transit_details.departure_stop.name
+				title: step.transit.departure_stop.name
 			}),
 			new google.maps.Marker({
 				map: this.map,
-				position: step.transit_details.arrival_stop.location,
+				position: step.transit.arrival_stop.location,
 				icon: stopIcon,
-				title: step.transit_details.arrival_stop.name
+				title: step.transit.arrival_stop.name
 			})
 		]);
 	}

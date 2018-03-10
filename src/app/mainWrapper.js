@@ -4,7 +4,7 @@ const $ = require('jquery');
 require('../scss/mainWrapper.scss');
 
 class mainWrapperController {
-	constructor($scope, $rootScope, mapService, routesService, warsawApiService, geolocationService, $timeout, loaderService, apiService, dataService) {
+	constructor($scope, $rootScope, mapService, routesService, warsawApiService, geolocationService, $timeout, loaderService, apiService, dataService, mobileService) {
 		'ngInject';
 
 		this.timeout = $timeout;
@@ -17,13 +17,12 @@ class mainWrapperController {
 		this.dataService = dataService;
 		this.$scope = $scope;
 		this.$rootScope = $rootScope;
+		this.mobileService = mobileService;
 
-		this.routes = null;
 		this.selectedCategory = null;
 		this.selectedRoute = null;
 		this.selectedPolyline = null;
 
-		this.showDetails = null;
 		this.remainTimeInterval = null;
 		this.onlineViewInterval = null;
 
@@ -31,17 +30,14 @@ class mainWrapperController {
 	}
 
 	$onInit() {
+		this.mobileService.init();
+
 		this.apiService.getCitiesPromise()
 			.then(city => {
 				this.city = city;
 
 				this.mapInit();
-				this.categoriesInit();
 			});
-
-		$(window).on('resize', () => {
-			this.mobile = $(document).width() < 900;
-		}).trigger('resize');
 
 		this.$rootScope.$on('favoritePlace', (event, place) => {
 			this.markerClick(this.mapService.getFakeMarker(place));
@@ -93,21 +89,9 @@ class mainWrapperController {
 		this.mapService.fitBounds(boundsCoords);
 	}
 
-	categoriesInit() {
-		this.apiService.getCategoriesPromise();
-	}
-
-	timeInterval() {
-		this.remainTimeInterval = setInterval(() => {
-			this.updateRemainTime();
-		}, 30000);
-		this.updateRemainTime();
-	}
-
 	categorySelectChange(item) {
+		this.selectedCategory = item;
 		this.loaderService.loaderOn();
-		this.clearRoutes();
-		this.closeRouteDetails();
 
 		this.apiService.getPlacesForCategoryPromise(this.city.id, item.id)
 			.then(places => {
@@ -120,7 +104,7 @@ class mainWrapperController {
 							});
 						});
 
-						this.scrollToMap();
+						this.mobileService.scrollToMap();
 						this.loaderService.loaderOff(1000);
 					});
 			});
@@ -132,117 +116,18 @@ class mainWrapperController {
 
 		this.routesService.getAvailableConnectionsPromise(this.mapService.myPositionMarker, marker)
 			.then(data => {
-				this.routes = data;
+				this.dataService.routes = data;
 				this.mapService.showSpecifiedMarkers(this.mapService.myPositionMarker.position, marker.position);
 
-				if (this.routes.length > 0) {
-					this.timeInterval();
+				if (this.dataService.routes.length > 0) {
+					this.routesWindow.timeInterval();
 				}
 
-				this.scrollToMap();
-				this.showRoutesMobile();
+				this.mobileService.scrollToMap();
+				this.mobileService.showRoutesMobile();
 
 				this.loaderService.loaderOff(1000);
 			});
-	}
-
-	// Methods for routes list
-
-	loadMoreRoutes() {
-		this.loaderService.loaderOn();
-
-		this.routesService.getAvailableConnectionsPromise(this.mapService.myPositionMarker, this.routesService.currentDestinationMarker)
-			.then(data => {
-				this.routes = this.routes.concat(data);
-
-				if (this.routes.length > 0) {
-					this.updateRemainTime();
-				}
-				this.loaderService.loaderOff(1000);
-			});
-	}
-
-	showRouteDetails(route) {
-		this.selectedRoute = route;
-		this.mapService.drawPolylinesPromise(route)
-			.then(polylines => {
-
-				polylines.forEach(polyline => {
-					polyline.addListener('click', () => {
-						this.polylineClick(polyline);
-					});
-				});
-
-			});
-
-		this.timeout(() => {
-			this.showDetails = true;
-
-			if (this.mobile) {
-				this.hideRoutesMobile();
-			}
-		}, 250);
-	}
-
-	closeRouteDetails() {
-		this.showDetails = null;
-		this.mapService.clearPolylines();
-		this.mapService.clearOnlineVehicles();
-		this.mapService.clearLineMarkers();
-		clearInterval(this.onlineViewInterval);
-
-		this.timeout(() => {
-			this.selectedRoute = null;
-		}, 500);
-	}
-
-	closeRoutesList() {
-		if (this.selectedCategory) {
-			this.categorySelectChange(this.selectedCategory);
-		} else {
-			this.loaderService.loaderOn();
-			this.mapService.clearAll();
-			this.clearRoutes();
-			this.scrollUp();
-			this.loaderService.loaderOff(2000);
-		}
-	}
-
-	clearRoutes() {
-		this.routes = null;
-		clearInterval(this.remainTimeInterval);
-		this.remainTimeInterval = null;
-	}
-
-	updateRemainTime() {
-		let onlyWalk = false;
-
-		this.routes.forEach((route, index, object) => {
-			if (!route.departure_time) {
-				if (onlyWalk) {
-					object.splice(index, 1);
-				}
-
-				onlyWalk = true;
-				return;
-			}
-
-			let remainTime = Math.floor((route.departure_time.value - (Date.now() / 1000)) / 60);
-
-			this.timeout(() => {
-				route.remaining_time = remainTime;
-
-				if (remainTime < -1) {
-					object.splice(index, 1);
-
-					if (this.routes.length < 4) {
-						this.loadMoreRoutes();
-					}
-				} else if (remainTime < 3) {
-					this.flashEffect(route);
-				}
-			});
-		});
 	}
 
 	// Methods for online view
@@ -286,57 +171,11 @@ class mainWrapperController {
 			});
 	}
 
-	// Flash method
-	flashEffect(route) {
-		route.flash = true;
-
-		this.timeout(() => {
-			route.flash = false;
-		}, 1000);
-	}
-
 	getCoordsFromGeolocatorPosition(position) {
 		return {
 			lat: position.coords.latitude,
 			lng: position.coords.longitude
 		};
-	}
-
-	// Methods for mobile
-
-	scrollToMap() {
-		if (this.mobile) {
-			let map = $('#map');
-
-			if (map.offset().top > 100) {
-				$('.mainWrapper').animate({scrollTop: map.offset().top}, 'slow');
-			}
-		}
-	}
-
-	scrollUp() {
-		$('.mainWrapper').animate({scrollTop: 0}, 'slow');
-	}
-
-	showRoutesMobile() {
-		if (this.mobile) {
-			setTimeout(() => {
-				$('.mainWrapper__routesListWrapper').addClass('slide');
-			}, 200);
-		}
-
-	}
-
-	hideRoutesMobile() {
-		if (this.mobile) {
-			$('.mainWrapper__routesListWrapper').removeClass('slide');
-		}
-	}
-
-	mobileMapClick() {
-		if (this.mobile) {
-			this.hideRoutesMobile();
-		}
 	}
 }
 

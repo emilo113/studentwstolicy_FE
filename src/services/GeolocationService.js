@@ -79,6 +79,7 @@ class GeolocationService {
 				url: this.CITY_DATA_URL,
 				data: parameters,
 				dataType: 'JSON',
+				cache: false,
 				success: answer => {
 					resolve(answer);
 				}
@@ -131,10 +132,10 @@ class GeolocationService {
 
 	// Methods for getting stops coordinates for line
 	getStopsPromise(line, city) {
-		let url = 'http://www.ztm.waw.pl/rozklad_nowy.php?c=182&l=1&q=' + line;
-
+		let url = 'https://www.ztm.waw.pl/rozklad_nowy.php?c=182&l=1&q=' + line + '&callback=?';
 		return new Promise((resolve, reject) => {
-			$.get({
+			$.ajax({
+				type: 'GET',
 				url,
 				success: answer => {
 					let html = $(answer);

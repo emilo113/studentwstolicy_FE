@@ -1,12 +1,11 @@
 import tpl from './SignInModal.html';
 
 class SignInModalController {
-	constructor(apiService, alertsService, dataService) {
+	constructor(apiService, alertsService) {
 		'ngInject';
 
 		this.apiService = apiService;
 		this.alertsService = alertsService;
-		this.dataService = dataService;
 
 		this.loading = false;
 	}

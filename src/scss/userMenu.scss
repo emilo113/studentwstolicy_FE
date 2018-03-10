@@ -50,6 +50,7 @@
 			max-height: $userMenuHeight;
 			transition: max-height .5s;
 			z-index: 2;
+			height: auto;
 
 			&--expand {
 				max-height: calc(#{$mainWrapperHeightMobile});
